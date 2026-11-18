@@ -184,6 +184,13 @@
     font-family: var(--font-mono); font-size: 11.5px; color: var(--muted);
     border: 1px solid var(--line); border-radius: 3px; padding: 3px 8px; background: var(--surface);
   }
+  .visit { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-top: 20px; min-width: 0; }
+  .visit-label {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .visit a { font-family: var(--font-mono); font-size: 13.5px; overflow-wrap: anywhere; }
+  .visit-note { font-size: .88rem; color: var(--muted); }
 
   /* competences */
   .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px 28px; }
@@ -245,14 +252,14 @@
     <p class="eyebrow fr">Développeur · Bénin</p>
     <p class="eyebrow en" hidden>Developer · Benin</p>
     <h1>Champion Hessou</h1>
-    <p class="role fr">Développeur full-stack, dominante backend</p>
-    <p class="role en" hidden>Full-stack developer, backend-first</p>
+    <p class="role fr">Développeur full-stack, dominante front-end</p>
+    <p class="role en" hidden>Full-stack developer, front-end-first</p>
 
-    <p class="lede fr">Je construis et je mets en production des services qui doivent fonctionner dans plusieurs pays à la fois — monnaies, systèmes scolaires, opérateurs de paiement et règles différents, sur une seule base de code.</p>
-    <p class="lede en" hidden>I build and ship services that have to work in several countries at once — different currencies, school systems, payment operators and rules, from a single codebase.</p>
+    <p class="lede fr">Je construis des applications complètes, de l'écran jusqu'à la base de données, pour des produits qui doivent fonctionner dans plusieurs pays à la fois — monnaies, systèmes scolaires, opérateurs de paiement et règles différents, sur une seule base de code.</p>
+    <p class="lede en" hidden>I build complete applications, from the screen down to the database, for products that have to work in several countries at once — different currencies, school systems, payment operators and rules, from a single codebase.</p>
 
-    <p class="lede fr">Depuis août 2026, je travaille sur <strong>SuccèsSco</strong>, une plateforme SaaS multi-locataire de gestion scolaire, en service dans six pays d'Afrique de l'Ouest et centrale. À côté, je livre seul des applications complètes, de la base de données à l'interface.</p>
-    <p class="lede en" hidden>Since August 2026 I have been working on <strong>SuccèsSco</strong>, a multi-tenant school-management SaaS now live in six West and Central African countries. Alongside it, I ship complete applications on my own, from database to interface.</p>
+    <p class="lede fr">Depuis août 2026, je travaille sur <strong>SuccèsSco</strong>, une plateforme SaaS multi-locataire de gestion scolaire, en service dans six pays d'Afrique de l'Ouest et centrale. À côté, je livre seul des applications React de bout en bout : les écrans, l'API qui les sert et la base dessous.</p>
+    <p class="lede en" hidden>Since August 2026 I have been working on <strong>SuccèsSco</strong>, a multi-tenant school-management SaaS now live in six West and Central African countries. Alongside it, I ship React applications end to end on my own: the screens, the API behind them and the database underneath.</p>
   </div>
 
   <div class="wrap figures">
@@ -341,6 +348,12 @@
           <span>NestJS</span><span>FastAPI</span><span>Next.js</span><span>TypeScript</span><span>Python</span>
           <span>PostgreSQL</span><span>Keycloak</span><span>Nx</span><span>Docker</span><span>Google Cloud Run</span><span>GitHub Actions</span>
         </div>
+        <p class="visit">
+          <span class="visit-label fr">En ligne</span><span class="visit-label en" hidden>Live</span>
+          <a href="https://tgo.rafrique.successco.africa" target="_blank" rel="noopener">tgo.rafrique.successco.africa</a>
+          <span class="visit-note fr">le déploiement du Togo, ouvert au public</span>
+          <span class="visit-note en" hidden>the Togo deployment, open to the public</span>
+        </p>
       </div>
     </article>
 
