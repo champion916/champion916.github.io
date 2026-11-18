@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Champion Hessou, developpeur full-stack a dominante backend : microservices multi-pays, PostgreSQL, Keycloak, paiements mobile money.">
+<meta name="author" content="Champion Hessou">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Champion Hessou - Developpeur full-stack">
+<meta property="og:description" content="Microservices multi-pays, PostgreSQL, Keycloak, paiements mobile money. Six pays en production.">
+<meta property="og:url" content="https://champion916.github.io/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230E6B6B'/%3E%3Ctext x='32' y='43' font-family='Helvetica,Arial,sans-serif' font-size='30' font-weight='700' fill='%23F7F6F3' text-anchor='middle'%3ECH%3C/text%3E%3C/svg%3E">
+<style>
+  /* Socle equivalent a celui que l'hebergeur d'artifacts fournissait. */
+  :root {
+    color-scheme: light;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Champion Hessou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout : une colonne editoriale ; chaque projet = bandeau meta a gauche, recit a droite, empile sous 760px */
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --fg: #141A1C;
+    --muted: #5C6769;
+    --line: #E2E0DA;
+    --accent: #0E6B6B;
+    --accent-soft: #E4EFEE;
+    --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", "Consolas", monospace;
+    --wrap: 960px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1214;
+      --surface: #151C1E;
+      --fg: #E9EEED;
+      --muted: #96A4A3;
+      --line: #253133;
+      --accent: #5BC8BE;
+      --accent-soft: #11292A;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1214;
+    --surface: #151C1E;
+    --fg: #E9EEED;
+    --muted: #96A4A3;
+    --line: #253133;
+    --accent: #5BC8BE;
+    --accent-soft: #11292A;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.12; }
+  p { margin: 0; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* barre haute */
+  .topbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px);
+    background: var(--bg);
+    z-index: 21;
+  }
+  .topbar .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 12px;
+  }
+  .sig { font-family: var(--font-mono); font-size: 13px; letter-spacing: .04em; color: var(--muted); }
+  .langs { display: flex; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .langs button {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em;
+    border: 0; background: transparent; color: var(--muted);
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  }
+  .langs button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+
+  /* ouverture */
+  .hero { padding-block: 64px 48px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+  }
+  .hero h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); font-weight: 700; letter-spacing: -.025em; }
+  .role {
+    font-family: var(--font-display); font-size: clamp(1.1rem, 3.4vw, 1.45rem);
+    font-weight: 600; color: var(--muted); margin-top: 12px;
+  }
+  .lede { margin-top: 26px; max-width: 62ch; font-size: 1.07rem; }
+  .lede + .lede { margin-top: 14px; }
+  .lede strong { font-weight: 600; color: var(--fg); }
+
+  /* chiffres */
+  .figures { padding-block: 36px; border-bottom: 1px solid var(--line); }
+  .figures-label {
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 20px;
+  }
+  .figgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 20px; }
+  @media (max-width: 760px) { .figgrid { grid-template-columns: repeat(2, 1fr); } }
+  .fig { min-width: 0; }
+  .fig b {
+    display: block; font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.9rem, 6vw, 2.5rem); letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; color: var(--accent);
+  }
+  .fig span { display: block; font-size: .9rem; color: var(--muted); margin-top: 2px; }
+
+  /* sections */
+  section.block { padding-block: 56px; border-bottom: 1px solid var(--line); }
+  .sec-head {
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 34px;
+  }
+
+  /* projets */
+  .proj { display: grid; grid-template-columns: 210px 1fr; gap: 32px; }
+  .proj + .proj { margin-top: 52px; padding-top: 52px; border-top: 1px solid var(--line); }
+  @media (max-width: 760px) { .proj { grid-template-columns: 1fr; gap: 18px; } }
+  .proj-meta { min-width: 0; display: flex; flex-direction: column; gap: 14px; margin: 0; }
+  .meta-item { min-width: 0; }
+  .meta-item dt {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .meta-item dd { margin: 2px 0 0; font-size: .92rem; }
+  .proj-body { min-width: 0; }
+  .proj-body h3 { font-size: clamp(1.45rem, 4.4vw, 1.9rem); font-weight: 700; letter-spacing: -.015em; }
+  .proj-kind {
+    display: inline-block; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 3px 9px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .proj-body > p { margin-top: 12px; max-width: 62ch; }
+  .points { margin: 20px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 11px; }
+  .points li { position: relative; padding-left: 20px; max-width: 64ch; font-size: .97rem; }
+  .points li::before {
+    content: ""; position: absolute; left: 0; top: .62em;
+    width: 7px; height: 2px; background: var(--accent);
+  }
+  .stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+  .stack span {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 3px; padding: 3px 8px; background: var(--surface);
+  }
+
+  /* competences */
+  .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px 28px; }
+  @media (max-width: 760px) { .skills { grid-template-columns: 1fr; gap: 24px; } }
+  .skill { min-width: 0; }
+  .skill h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .skill p { font-size: .93rem; color: var(--muted); }
+
+  /* contact */
+  .contact { padding-block: 56px 72px; }
+  .contact h2 { font-size: clamp(1.7rem, 5vw, 2.2rem); font-weight: 700; letter-spacing: -.02em; }
+  .contact p { margin-top: 14px; max-width: 56ch; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .links a {
+    font-family: var(--font-mono); font-size: 13px; text-decoration: none;
+    border: 1px solid var(--line); background: var(--surface);
+    padding: 10px 16px; border-radius: 4px; color: var(--fg);
+  }
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
+  .contactlines { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+  .cline { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; min-width: 0; }
+  .clabel {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted); min-width: 72px;
+  }
+  .cval {
+    font-family: var(--font-mono); font-size: 15px; color: var(--fg);
+    min-width: 0; overflow-wrap: anywhere;
+  }
+  .copy {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em;
+    text-transform: uppercase; border: 1px solid var(--line);
+    background: var(--surface); color: var(--muted);
+    padding: 4px 10px; border-radius: 3px; cursor: pointer;
+  }
+  .copy:hover { border-color: var(--accent); color: var(--accent); }
+  .copy .done { display: none; }
+  .copy[data-copied] { border-color: var(--accent); color: var(--accent); }
+  .copy[data-copied] .do { display: none; }
+  .copy[data-copied] .done { display: inline; }
+  .foot { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 40px; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <div class="sig">CH — 2026</div>
+    <div class="langs" role="group" aria-label="Langue / Language">
+      <button type="button" id="btn-fr" data-set="fr" aria-pressed="true">FR</button>
+      <button type="button" id="btn-en" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <p class="eyebrow fr">Développeur · Bénin</p>
+    <p class="eyebrow en" hidden>Developer · Benin</p>
+    <h1>Champion Hessou</h1>
+    <p class="role fr">Développeur full-stack, dominante backend</p>
+    <p class="role en" hidden>Full-stack developer, backend-first</p>
+
+    <p class="lede fr">Je construis et je mets en production des services qui doivent fonctionner dans plusieurs pays à la fois — monnaies, systèmes scolaires, opérateurs de paiement et règles différents, sur une seule base de code.</p>
+    <p class="lede en" hidden>I build and ship services that have to work in several countries at once — different currencies, school systems, payment operators and rules, from a single codebase.</p>
+
+    <p class="lede fr">Depuis août 2026, je travaille sur <strong>SuccèsSco</strong>, une plateforme SaaS multi-locataire de gestion scolaire, en service dans six pays d'Afrique de l'Ouest et centrale. À côté, je livre seul des applications complètes, de la base de données à l'interface.</p>
+    <p class="lede en" hidden>Since August 2026 I have been working on <strong>SuccèsSco</strong>, a multi-tenant school-management SaaS now live in six West and Central African countries. Alongside it, I ship complete applications on my own, from database to interface.</p>
+  </div>
+
+  <div class="wrap figures">
+    <p class="figures-label fr">La plateforme SuccèsSco, en chiffres</p>
+    <p class="figures-label en" hidden>The SuccèsSco platform, in numbers</p>
+    <div class="figgrid">
+      <div class="fig">
+        <b>549</b>
+        <span class="fr">commits de ma main sur la branche principale</span>
+        <span class="en" hidden>commits of mine on the main branch</span>
+      </div>
+      <div class="fig">
+        <b>17</b>
+        <span class="fr">applications dans un monorepo Nx</span>
+        <span class="en" hidden>applications in one Nx monorepo</span>
+      </div>
+      <div class="fig">
+        <b>9</b>
+        <span class="fr">pays décrits entièrement en configuration</span>
+        <span class="en" hidden>countries described entirely in configuration</span>
+      </div>
+      <div class="fig">
+        <b>6</b>
+        <span class="fr">en production sur Google Cloud Run</span>
+        <span class="en" hidden>live in production on Google Cloud Run</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap block">
+    <p class="sec-head fr">Projets</p>
+    <p class="sec-head en" hidden>Selected work</p>
+
+    <article class="proj">
+      <dl class="proj-meta">
+        <div class="meta-item">
+          <dt class="fr">Contexte</dt><dt class="en" hidden>Context</dt>
+          <dd class="fr">Révélateur Afrique SA</dd><dd class="en" hidden>Révélateur Afrique SA</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Période</dt><dt class="en" hidden>Period</dt>
+          <dd class="fr">Août 2026 → aujourd'hui</dd><dd class="en" hidden>August 2026 → present</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Mon rôle</dt><dt class="en" hidden>My role</dt>
+          <dd class="fr">Backend — services, données, déploiement</dd>
+          <dd class="en" hidden>Backend — services, data, deployment</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Équipe</dt><dt class="en" hidden>Team</dt>
+          <dd class="fr">6 personnes, frontend séparé</dd><dd class="en" hidden>6 people, separate frontend team</dd>
+        </div>
+      </dl>
+      <div class="proj-body">
+        <span class="proj-kind fr">Professionnel</span>
+        <span class="proj-kind en" hidden>Professional</span>
+        <h3>SuccèsSco</h3>
+        <p class="fr">Une plateforme SaaS qui couvre la scolarité de bout en bout : inscriptions, notes et bulletins, frais de scolarité, suivi parental payant, emplois du temps, comptabilité. Chaque pays a son système scolaire, sa monnaie et ses opérateurs de paiement — tout cela est décrit en configuration, pas en branches de code.</p>
+        <p class="en" hidden>A SaaS platform covering school life end to end: enrolment, marks and report cards, tuition fees, a paid parental-tracking subscription, timetables, accounting. Each country has its own school system, currency and payment operators — all of it described in configuration rather than in code branches.</p>
+        <ul class="points">
+          <li class="fr"><strong>Architecture microservices</strong> — 17 applications dans un monorepo Nx : sept en Node (NestJS, Next.js) et neuf services Python en FastAPI, chacun avec sa base et son contrat OpenAPI.</li>
+          <li class="en" hidden><strong>Microservice architecture</strong> — 17 applications in an Nx monorepo: seven Node (NestJS, Next.js) and nine Python FastAPI services, each with its own database and OpenAPI contract.</li>
+
+          <li class="fr"><strong>Cloisonnement multi-locataire</strong> — un établissement ne voit que ses données, garanti dans PostgreSQL par des politiques Row-Level Security plutôt que par une condition qu'un développeur peut oublier.</li>
+          <li class="en" hidden><strong>Multi-tenant isolation</strong> — a school sees only its own data, enforced inside PostgreSQL by Row-Level Security policies rather than by a clause a developer can forget.</li>
+
+          <li class="fr"><strong>Configuration par pays en code</strong> — référentiels scolaires, règles de calcul des moyennes, formats de bulletin, barèmes d'appréciation, grilles tarifaires. Ouvrir un pays, c'est écrire un fichier et le faire relire, pas modifier un service.</li>
+          <li class="en" hidden><strong>Per-country configuration as code</strong> — school referentials, grade-averaging rules, report-card layouts, appreciation scales, pricing grids. Opening a country means writing one reviewed file, not changing a service.</li>
+
+          <li class="fr"><strong>Paiements mobile money</strong> — intégration de Moov Money, MTN MoMo et FedaPay. Un paiement n'est jamais cru sur parole : le service interroge l'opérateur, et une file de relance rattrape les notifications perdues.</li>
+          <li class="en" hidden><strong>Mobile money payments</strong> — Moov Money, MTN MoMo and FedaPay integrations. A payment is never taken on trust: the service queries the operator, and a retry queue recovers lost notifications.</li>
+
+          <li class="fr"><strong>Authentification déclarative</strong> — le realm Keycloak est un fichier versionné, appliqué à chaque déploiement. Rôles, clients et durées de session se relisent en revue de code au lieu de se cliquer dans une console.</li>
+          <li class="en" hidden><strong>Declarative authentication</strong> — the Keycloak realm is a versioned file applied on every deployment. Roles, clients and session lifetimes are reviewed in a pull request instead of clicked through a console.</li>
+
+          <li class="fr"><strong>Mise en production</strong> — six pays déployés sur Google Cloud Run, avec Cloud SQL et Secret Manager. Les quotas de l'hébergeur ont été contournés par une passerelle partagée plutôt qu'en multipliant les adresses.</li>
+          <li class="en" hidden><strong>Production rollout</strong> — six countries deployed on Google Cloud Run with Cloud SQL and Secret Manager. Platform quotas were worked around with a shared gateway instead of multiplying addresses.</li>
+
+          <li class="fr"><strong>Moteur d'emploi du temps</strong> — un solveur sous contraintes, tenu dans son propre dépôt pour rester indépendant de la plateforme.</li>
+          <li class="en" hidden><strong>Timetable engine</strong> — a constraint solver, kept in its own repository so it stays independent of the platform.</li>
+
+          <li class="fr"><strong>Intégration continue</strong> — Nx affected ne rejoue que ce que le changement touche : lint, tests, build, typage, bout en bout, et un contrôle qui échoue si un contrat OpenAPI n'est plus à jour.</li>
+          <li class="en" hidden><strong>Continuous integration</strong> — Nx affected only reruns what a change touches: lint, tests, build, typecheck, end-to-end, plus a check that fails when an OpenAPI contract drifts.</li>
+        </ul>
+        <div class="stack">
+          <span>NestJS</span><span>FastAPI</span><span>Next.js</span><span>TypeScript</span><span>Python</span>
+          <span>PostgreSQL</span><span>Keycloak</span><span>Nx</span><span>Docker</span><span>Google Cloud Run</span><span>GitHub Actions</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="proj">
+      <dl class="proj-meta">
+        <div class="meta-item">
+          <dt class="fr">Période</dt><dt class="en" hidden>Period</dt>
+          <dd>2026</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Mon rôle</dt><dt class="en" hidden>My role</dt>
+          <dd class="fr">Seul, de la base de données à l'interface</dd>
+          <dd class="en" hidden>Solo, from database to interface</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Volume</dt><dt class="en" hidden>Volume</dt>
+          <dd class="fr">59 commits</dd><dd class="en" hidden>59 commits</dd>
+        </div>
+      </dl>
+      <div class="proj-body">
+        <span class="proj-kind fr">Personnel</span>
+        <span class="proj-kind en" hidden>Personal</span>
+        <h3 class="fr">Mon Bar-Restaurant</h3>
+        <h3 class="en" hidden>My Bar-Restaurant</h3>
+        <p class="fr">Deux applications sur une même API : un site client — carte, commande à table par QR code, réservation, paiement mobile money — et un espace du personnel qui couvre la caisse, l'écran cuisine, le bar, les stocks et les finances.</p>
+        <p class="en" hidden>Two applications over one API: a customer site — menu, QR-code table ordering, booking, mobile money payment — and a staff area covering the till, the kitchen screen, the bar, stock and finances.</p>
+        <ul class="points">
+          <li class="fr"><strong>Une réécriture assumée.</strong> La première version, livrée en Python et FastAPI avec des pages rendues côté serveur, ne tenait plus le besoin : l'écran cuisine et la caisse demandaient un état partagé qui change en continu. Je l'ai refaite en React sur une API Laravel, et j'ai archivé l'ancienne.</li>
+          <li class="en" hidden><strong>A deliberate rewrite.</strong> The first version, shipped in Python and FastAPI with server-rendered pages, no longer fit the need: the kitchen screen and the till called for continuously changing shared state. I rebuilt it in React over a Laravel API and archived the old one.</li>
+          <li class="fr"><strong>Un compte par métier.</strong> Clients et personnel partagent une page de connexion mais pas un espace : chacun arrive sur l'écran de son rôle, et les comptes du personnel ne s'ouvrent jamais en libre-service.</li>
+          <li class="en" hidden><strong>One account per job.</strong> Customers and staff share a sign-in page but not a workspace: each lands on the screen for their role, and staff accounts are never self-service.</li>
+          <li class="fr"><strong>Thème clair et sombre</strong> suivant le réglage du téléphone, parce que la salle et la cuisine ne sont pas éclairées pareil.</li>
+          <li class="en" hidden><strong>Light and dark themes</strong> following the phone's setting, because the dining room and the kitchen are not lit the same way.</li>
+        </ul>
+        <div class="stack">
+          <span>Laravel 12</span><span>PHP 8.2</span><span>MySQL</span><span>Sanctum</span><span>React</span><span>Vite</span><span>Tailwind CSS</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="proj">
+      <dl class="proj-meta">
+        <div class="meta-item">
+          <dt class="fr">Période</dt><dt class="en" hidden>Period</dt>
+          <dd>2026</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Mon rôle</dt><dt class="en" hidden>My role</dt>
+          <dd class="fr">Seul, API et interface</dd><dd class="en" hidden>Solo, API and interface</dd>
+        </div>
+      </dl>
+      <div class="proj-body">
+        <span class="proj-kind fr">Personnel</span>
+        <span class="proj-kind en" hidden>Personal</span>
+        <h3 class="fr">Gestion d'élevage — cuniculture</h3>
+        <h3 class="en" hidden>Rabbit farm management</h3>
+        <p class="fr">Le suivi d'un élevage de lapins : cages et cases, animaux, traitements, et surtout le cycle de reproduction — saillie, mise bas, sevrage — avec le calcul automatique de la date de mise bas probable et une alerte sur celles qui approchent.</p>
+        <p class="en" hidden>Tracking a rabbit farm: cages and pens, animals, treatments, and above all the breeding cycle — mating, kindling, weaning — with automatic calculation of the expected kindling date and alerts on the ones coming up.</p>
+        <ul class="points">
+          <li class="fr"><strong>Le métier décide du modèle.</strong> Un animal porte son historique complet de traitements et de reproductions ; c'est cette fiche, et non un tableau de lignes, que l'éleveur consulte.</li>
+          <li class="en" hidden><strong>The domain drives the model.</strong> An animal carries its full history of treatments and breedings; that record, not a table of rows, is what the farmer actually reads.</li>
+          <li class="fr"><strong>Deux rôles nettement séparés</strong> — l'employé saisit, l'administrateur pilote et gère les comptes sans jamais saisir à la place de l'employé.</li>
+          <li class="en" hidden><strong>Two clearly separated roles</strong> — the employee records, the administrator oversees and manages accounts without ever recording in the employee's place.</li>
+        </ul>
+        <div class="stack">
+          <span>CodeIgniter 4</span><span>PHP 8.2</span><span>MySQL</span><span>React 19</span><span>Vite</span><span>Bearer token</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="proj">
+      <dl class="proj-meta">
+        <div class="meta-item">
+          <dt class="fr">Cadre</dt><dt class="en" hidden>Setting</dt>
+          <dd class="fr">Licence 3 — programmation web avancée</dd>
+          <dd class="en" hidden>Third-year degree — advanced web programming</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Mon rôle</dt><dt class="en" hidden>My role</dt>
+          <dd class="fr">Chef de projet et back-end</dd><dd class="en" hidden>Project lead and back-end</dd>
+        </div>
+        <div class="meta-item">
+          <dt class="fr">Équipe</dt><dt class="en" hidden>Team</dt>
+          <dd class="fr">4 personnes</dd><dd class="en" hidden>4 people</dd>
+        </div>
+      </dl>
+      <div class="proj-body">
+        <span class="proj-kind fr">Académique</span>
+        <span class="proj-kind en" hidden>Academic</span>
+        <h3 class="fr">Gestion des employés</h3>
+        <h3 class="en" hidden>Employee management</h3>
+        <p class="fr">Une application RH qui centralise les dossiers du personnel, les contrats et les congés, avec des droits stricts selon le rôle : service RH, manager, employé, direction. J'ai tenu le rôle de chef de projet et écrit l'API.</p>
+        <p class="en" hidden>An HR application centralising personnel files, contracts and leave, with strict role-based access: HR, manager, employee, management. I acted as project lead and wrote the API.</p>
+        <ul class="points">
+          <li class="fr"><strong>Répartir et tenir le périmètre.</strong> Quatre développeurs, un cahier des charges et un planning : l'essentiel du travail de chef de projet a été de découper proprement le front et l'API pour que les deux avancent sans s'attendre.</li>
+          <li class="en" hidden><strong>Splitting the work, holding the scope.</strong> Four developers, a specification and a schedule: most of the lead's job was cutting the front end and the API apart cleanly so neither had to wait on the other.</li>
+        </ul>
+        <div class="stack">
+          <span>Laravel</span><span>PHP 8.2</span><span>MySQL</span><span>React</span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="wrap block">
+    <p class="sec-head fr">Compétences</p>
+    <p class="sec-head en" hidden>Skills</p>
+    <div class="skills">
+      <div class="skill">
+        <h3>Backend</h3>
+        <p class="fr">NestJS et TypeScript, FastAPI et Python, Laravel et CodeIgniter en PHP. API REST décrites par un contrat OpenAPI, vérifié en intégration continue.</p>
+        <p class="en" hidden>NestJS with TypeScript, FastAPI with Python, Laravel and CodeIgniter in PHP. REST APIs described by an OpenAPI contract that CI verifies.</p>
+      </div>
+      <div class="skill">
+        <h3>Frontend</h3>
+        <p class="fr">React et Next.js, Vite, Tailwind CSS. Interfaces à plusieurs rôles, thème clair et sombre, usage sur téléphone d'abord.</p>
+        <p class="en" hidden>React and Next.js, Vite, Tailwind CSS. Multi-role interfaces, light and dark themes, phone-first usage.</p>
+      </div>
+      <div class="skill">
+        <h3 class="fr">Données</h3><h3 class="en" hidden>Data</h3>
+        <p class="fr">PostgreSQL, en particulier le cloisonnement par Row-Level Security et les migrations versionnées. MySQL, SQLite, TypeORM, SQLAlchemy.</p>
+        <p class="en" hidden>PostgreSQL, especially Row-Level Security isolation and versioned migrations. MySQL, SQLite, TypeORM, SQLAlchemy.</p>
+      </div>
+      <div class="skill">
+        <h3>Infrastructure</h3>
+        <p class="fr">Docker, Google Cloud Run, Cloud SQL, Secret Manager. Déploiements scriptés et rejouables, GitHub Actions, monorepo Nx.</p>
+        <p class="en" hidden>Docker, Google Cloud Run, Cloud SQL, Secret Manager. Scripted, repeatable deployments, GitHub Actions, Nx monorepo.</p>
+      </div>
+      <div class="skill">
+        <h3 class="fr">Identité et paiement</h3><h3 class="en" hidden>Identity and payments</h3>
+        <p class="fr">Keycloak et OpenID Connect, realm déclaratif, jetons internes signés. Mobile money : Moov Money, MTN MoMo, FedaPay.</p>
+        <p class="en" hidden>Keycloak and OpenID Connect, declarative realm, signed internal tokens. Mobile money: Moov Money, MTN MoMo, FedaPay.</p>
+      </div>
+      <div class="skill">
+        <h3 class="fr">Façon de travailler</h3><h3 class="en" hidden>How I work</h3>
+        <p class="fr">Tests automatisés, revue de code, configuration en code plutôt qu'en console, et une documentation écrite pour la personne qui déploiera — pas pour son auteur.</p>
+        <p class="en" hidden>Automated tests, code review, configuration as code rather than console clicks, and documentation written for whoever deploys next — not for its author.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap contact">
+    <h2 class="fr">Parlons-en</h2>
+    <h2 class="en" hidden>Let's talk</h2>
+    <p class="fr">Je suis ouvert aux missions et aux postes où il faut tenir un backend sérieux : plusieurs pays, plusieurs locataires, de l'argent qui transite, et du code qu'une autre personne devra reprendre.</p>
+    <p class="en" hidden>I am open to roles and contracts that call for a serious backend: several countries, several tenants, money moving through, and code someone else will have to pick up.</p>
+    <div class="contactlines">
+      <div class="cline">
+        <span class="clabel fr">Mail</span><span class="clabel en" hidden>Email</span>
+        <span class="cval" id="val-mail">hessouchampion@gmail.com</span>
+        <button type="button" class="copy" data-copy="hessouchampion@gmail.com" data-target="val-mail">
+          <span class="do fr">Copier</span><span class="do en" hidden>Copy</span>
+          <span class="done fr">Copié</span><span class="done en" hidden>Copied</span>
+        </button>
+      </div>
+      <div class="cline">
+        <span class="clabel fr">Téléphone</span><span class="clabel en" hidden>Phone</span>
+        <span class="cval" id="val-tel">+229 01 98 12 80 96</span>
+        <button type="button" class="copy" data-copy="+2290198128096" data-target="val-tel">
+          <span class="do fr">Copier</span><span class="do en" hidden>Copy</span>
+          <span class="done fr">Copié</span><span class="done en" hidden>Copied</span>
+        </button>
+      </div>
+    </div>
+    <div class="links">
+      <a href="https://github.com/champion916" target="_blank" rel="noopener">github.com/champion916</a>
+    </div>
+    <p class="foot fr">Les dépôts professionnels sont privés ; j'en détaille volontiers l'architecture et le code en entretien.</p>
+    <p class="foot en" hidden>The professional repositories are private; I am happy to walk through the architecture and the code in an interview.</p>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var KEY = 'portfolio-lang';
+    var btns = Array.prototype.slice.call(document.querySelectorAll('.langs button'));
+
+    function apply(lang) {
+      var fr = lang !== 'en';
+      document.querySelectorAll('.fr').forEach(function (el) { el.hidden = !fr; });
+      document.querySelectorAll('.en').forEach(function (el) { el.hidden = fr; });
+      document.documentElement.lang = fr ? 'fr' : 'en';
+      btns.forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.dataset.set === (fr ? 'fr' : 'en')));
+      });
+      try { localStorage.setItem(KEY, fr ? 'fr' : 'en'); } catch (e) { /* stockage indisponible */ }
+    }
+
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.set); });
+    });
+
+    // Copie du mail et du telephone : le presse-papiers peut etre refuse
+    // (anciennes applications de bureau, certaines vues integrees). Dans ce
+    // cas on selectionne le texte, que le visiteur copie lui-meme.
+    document.querySelectorAll('.copy').forEach(function (btn) {
+      function selectionner() {
+        var el = document.getElementById(btn.dataset.target);
+        if (!el) { return; }
+        var plage = document.createRange();
+        plage.selectNodeContents(el);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(plage);
+      }
+      function confirmer() {
+        btn.dataset.copied = '1';
+        setTimeout(function () { delete btn.dataset.copied; }, 1800);
+      }
+      btn.addEventListener('click', function () {
+        var texte = btn.dataset.copy;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(texte).then(confirmer, selectionner);
+        } else {
+          selectionner();
+        }
+      });
+    });
+
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) { /* stockage indisponible */ }
+    if (saved === 'en') { apply('en'); }
+  })();
+</script>
+</body>
+</html>
